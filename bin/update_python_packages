@@ -1,0 +1,35 @@
+#!/bin/bash
+
+set -e
+
+venv="$HOME"/venv/localshop-webhook
+
+if [[ ! -d "$venv" ]]; then
+  virtualenv "$venv"
+fi
+
+. "$venv"/bin/activate
+
+update_python_package() {
+  package=$1
+  retcode=0
+  if python -c "import $package" 2> /dev/null; then
+    pip uninstall -y "$package"
+    retcode=1
+  fi
+  pip install "$package"
+  return "$retcode"
+}
+
+retcode=0
+update_python_package localshop || retcode=$?
+if [[ "$retcode" -eq "0" ]]; then
+  localshop init
+fi
+
+if python -c "import $package" 2> /dev/null; then
+  pip uninstall -y localshop-webhook
+fi
+pip install .
+
+deactivate

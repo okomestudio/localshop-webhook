@@ -1,0 +1,7 @@
+[distutils]
+index-servers = localshop
+
+[localshop]
+username: <ACCESS_KEY>
+password: <SECRET_KEY>
+repository: https://localshop.mydomain.io/simple/
