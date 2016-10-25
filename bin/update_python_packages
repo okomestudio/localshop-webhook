@@ -27,7 +27,7 @@ if [[ "$retcode" -eq "0" ]]; then
   localshop init
 fi
 
-if python -c "import $package" 2> /dev/null; then
+if python -c "import localshop-webhook" 2> /dev/null; then
   pip uninstall -y localshop-webhook
 fi
 pip install .
