@@ -1,0 +1,34 @@
+#!/bin/bash
+
+set -e
+
+sudo apt-get install build-essential
+sudo apt-get install python-dev
+sudo apt-get install python-virtualenv
+sudo apt-get install git
+sudo apt-get install supervisor
+sudo apt-get install nginx
+sudo apt-get install ssl-cert
+
+sudo cp bin/runinvenv /usr/local/bin
+
+SERVICE_USER=localshop
+# If no service user account exists, create one.
+if ! grep -c "^${SERVICE_USER}:" /etc/passwd ; then
+  sudo useradd -m "$SERVICE_USER"
+
+  # This user needs to be able to read private cert.
+  sudo usermod -a -G ssl-cert "$SERVICE_USER"
+fi
+
+sudo cp conf/supervisord.conf /etc/supervisor/conf.d/localshop.conf
+
+sudo cp conf/nginx.conf /etc/nginx/conf.d/localshop.conf
+sudo /etc/init.d/nginx restart
+
+sudo su - "$SERVICE_USER" -c "mkdir -p /home/localshop/repos"
+sudo su - "$SERVICE_USER" -c "mkdir -p /home/localshop/log"
+sudo su -c bin/update_python_packages -s /bin/sh "$SERVICE_USER"
+
+sudo su -c "cp conf/pypirc /home/localshop/.pypirc" -s /bin/sh "$SERVICE_USER"
+sudo su -c "cp conf/gitconfig /home/localshop/.gitconfig" -s /bin/sh "$SERVICE_USER"
