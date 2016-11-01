@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
+import hashlib
 import hmac
 import logging
 from functools import wraps
@@ -23,9 +24,9 @@ def require_secret(f):
     fail_response = Response('Secret mismatch', 400)
 
     def signatures_match(request, key):
-        h = hmac.new(key, request.data, 'sha1')
+        h = hmac.new(key, request.data, hashlib.sha1)
         return hmac.compare_digest('sha1=' + h.hexdigest(),
-                                   request.headers['X-Hub-Signature'])
+                                   str(request.headers['X-Hub-Signature']))
 
     @wraps(f)
     def wrapper(*args, **kwargs):

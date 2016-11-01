@@ -20,7 +20,7 @@ def find_meta(category, fpath='pkg/__init__.py'):
 
 setup(
     name='localshop-webhook',
-    description='TBD',
+    description='GitHub webhook for Localshop PyPI server',
     author=find_meta('author'),
     author_email=find_meta('author_email'),
     license=find_meta('license'),

@@ -31,3 +31,4 @@ sudo su - "$SERVICE_USER" -c "mkdir -p /home/localshop/log"
 sudo su -c bin/update_python_packages -s /bin/sh "$SERVICE_USER"
 
 sudo su -c "cp conf/pypirc /home/localshop/.pypirc" -s /bin/sh "$SERVICE_USER"
+sudo su -c "cp conf/gitconfig /home/localshop/.gitconfig" -s /bin/sh "$SERVICE_USER"
