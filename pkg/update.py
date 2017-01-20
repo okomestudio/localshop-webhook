@@ -40,7 +40,12 @@ def _update_package(repo, ssh_url, branch, matcher):
              'trigger package update').format(
                  version, branch))
 
-    call(['python', 'setup.py', 'sdist', 'upload', '-r', index_server])
+    p = subprocess.Popen(
+        ['python', 'setup.py', 'sdist', 'upload', '-r', index_server],
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    out, err = p.communicate()
+    if p.returncode != 0:
+        raise Exception('Error uploading: \n{}'.format(out + '\n' + err))
 
 
 def update_package(commit):

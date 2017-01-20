@@ -7,6 +7,7 @@ from functools import wraps
 
 from flask import Flask
 from flask import jsonify
+from flask import make_response
 from flask import request
 from flask import Response
 
@@ -53,14 +54,13 @@ def post_webhook():
     try:
         update_package(commit)
     except SkipUpdate as e:
-        return jsonify(
-            {'status': 'skipped',
-             'message': repr(e)})
+        resp = {'status': 'skipped', 'message': repr(e)}
+        status = 400
     except Exception as e:
         log.exception('Error processing commit message')
-        return jsonify(
-            {'status': 'error',
-             'message': repr(e)})
-    return jsonify(
-        {'status': 'success',
-         'message': 'package updated'})
+        resp = {'status': 'error', 'message': repr(e)}
+        status = 400
+    else:
+        resp = {'status': 'success', 'message': 'package updated'}
+        status = 200
+    return make_response(jsonify(resp), status)
